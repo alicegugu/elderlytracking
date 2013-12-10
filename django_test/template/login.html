@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="padding: 100px 0 0 250px;">
+
+{% load staticfiles %}
+<div id="login-box" style = "background: url({% static "images/login-box-backg.png" %}) no-repeat left top;">
+
+<H2>Login</H2>
+Smart Tracking System for Elderly<br />
+<br />
+
+<form action="/accounts/auth/" method="post"> {% csrf_token %}
+<div id="login-box-name" style="margin-top:20px;">Email:</div><div id="login-box-field" style="margin-top:20px;"><input name="username" class="form-login" title="Username" value="" size="30" maxlength="2048" /></div>
+<div id="login-box-name">Password:</div><div id="login-box-field"><input name="password" type="password" class="form-login" title="Password" value="" size="30" maxlength="2048" /></div>
+<br />
+<span class="login-box-options"><input type="checkbox" name="1" value="1"> Remember Me <a href="#" style="margin-left:30px;">Forgot password?</a></span>
+<br />
+<br />
+
+<div style="float:left;width:40%;"> <a href="#"><input type="image" src="{% static "images/login-btn.png" %}" width="85" height="42" style="margin-left:90px;" alt="Submit Form" /></a> </div>
+<div style="float:right;width:60%;"> <a href="/accounts/register/"><img src="{% static "images/login-btn.png" %}" width="85" height="42" style="margin-left:90px;" /></a> </span> </div>
+</form>
+</div>
+{% endblock %}
+
+
+
+
+
+
+</div>
+
+

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block header %}
+<link href="{% static "css/header.css" %}" rel="stylesheet" type="text/css" />
+<br />
+<br />
+<br />
+    <div id="navigation" style = "background: url( {% static "images/navigation-bg.jpg" %} ) no-repeat left top;">
+			<ul>
+            	<li><a href="navigation.html">Home</a></li>
+                <li><a href="navigation.html">Track</a></li>
+				<li><a href="navigation.html">Contact Us</a></li>
+				<li style ="float: right"><a href="/accounts/logout">Logout</a></li>
+				<li style ="float: right"><a href="/accounts/profile">{{full_name}}</a></li>
+			</ul>
+	</div>    
+
+<br />
+<br />
+<br />
+<br />
+
+{% endblock %}

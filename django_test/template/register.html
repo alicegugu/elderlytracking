@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block content %}
+    <!--BEGIN #signup-form -->
+    <div id="signup-form">
+        
+        <!--BEGIN #subscribe-inner -->
+        <div id="signup-inner">
+        
+        	<div class="clearfix" id="header">
+        	
+        		<img id="signup-icon" src="{% static "images/signup.png" %}" alt="" />
+        
+                <h1>Register for Smart Tracking System!</h1>
+
+            
+            </div>
+			<p>Please complete the fields below</p>
+
+            
+            <form action="/accounts/register/" method="post">{% csrf_token %}
+            	
+                <p>
+                <label for="name">username:</label>
+                {{form.username}}
+                </p>
+                 
+				<p>
+                <label for="password">password:</label>
+                {{form.password1}}
+                </p>
+                
+				<p>
+                <label for="password">confirm password:</label>
+                {{form.password2}}
+                </p>
+                
+                <p>
+                <button id="submit" type="submit">Register</button>
+                </p>
+                
+            </form>
+            
+		<div id="required">
+		<p>* Required Fields</p>
+		</div>
+
+
+            </div>
+        
+        <!--END #signup-inner -->
+        </div>
+        
+    <!--END #signup-form -->   
+    </div>
+
+{% endblock %}
