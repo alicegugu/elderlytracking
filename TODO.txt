@@ -1,0 +1,3 @@
+1. Fix navigation bar
+2. Profile(Ajax form)
+3. Show position
