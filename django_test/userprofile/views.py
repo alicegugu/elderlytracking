@@ -11,6 +11,8 @@ def user_profile(request):
 		if form.is_valid():
 			form.save()
 			return HttpResponseRedirect('/accounts/loggedin')
+		else:
+			return HttpResponseRedirect('/accounts/loggedin')
 			
 	else:
 		user = request.user
