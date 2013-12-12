@@ -1,6 +1,6 @@
 {% extends "header.html" %}
 {% block content %}
-<h2>Profile</h2>
+
 
 
 <script type="text/javascript">
@@ -26,7 +26,8 @@ $("#form").submit(function(e){
     });
 });*/
 </script>
-
+<div align = "center">
+<h2 >Profile</h2>
 <form id="form" method="POST" action="/accounts/profile/" enctype="multipart/form-data">
 	{% csrf_token %}
 	<table>
@@ -52,4 +53,5 @@ $("#form").submit(function(e){
 	<input type="submit" id="save" value="Update" />
 </form>
 	<label>Saved</label>
+</div>
 {% endblock %}

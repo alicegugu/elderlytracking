@@ -102,4 +102,5 @@ CACHES = {
     }
 }
 
+# where uploaded files will be put
 MEDIA_ROOT = os.path.join(BASE_DIR, "static")

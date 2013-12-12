@@ -5,6 +5,7 @@ from django.core.context_processors import csrf
 from django.contrib.auth.forms import UserCreationForm
 from django.core.cache import cache
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 def login(request):
 	c = {}
@@ -55,7 +56,16 @@ def register_success(request, position):
 def set_position(request):
 	cache_key = request.GET.get('tag_id')
 	position = request.GET.get('position')
-	cache_time = 1800
+
+	# position will be updated for 30 sec
+	cache_time = 30
 	cache.set(cache_key, position, cache_time)
 	return HttpResponse(cache.get(cache_key))
-	
+
+@login_required
+def get_position(request):
+	user = request.user
+	profile = user.profile
+	cache_key = profile.tag_id
+	position = cache.get(cache_key)
+	return HttpResponse(position)
