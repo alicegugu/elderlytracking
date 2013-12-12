@@ -1,3 +1,4 @@
 1. Profile(Ajax form)
 2. make a web page show position(AJAX)
 3. set router position
+4. API http://ianalexandr.com/blog/building-a-true-oauth-20-api-with-django-and-tasty-pie.html
