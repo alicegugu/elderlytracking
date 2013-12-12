@@ -1,0 +1,25 @@
+{% extends "header.html" %}
+
+{% block content %}
+
+<div align="center">
+<canvas id="canvas"></canvas>
+</div>
+<script type="text/javascript">
+var canvas = document.getElementById("canvas"),
+    ctx = canvas.getContext("2d");
+
+canvas.width = 903;
+canvas.height = 657;
+
+
+var background = new Image();
+background.src = "static/{{layout}}";
+
+background.onload = function(){
+    ctx.drawImage(background,0,0);   
+}
+</script>
+
+
+{% endblock %}

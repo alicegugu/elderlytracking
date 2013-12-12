@@ -21,4 +21,5 @@ urlpatterns = patterns('',
 	url(r'^accounts/register_success/$', 'django_test.views.register_success'),
 	url(r'^set_position$', 'django_test.views.set_position'),
 	url(r'^get_position$', 'django_test.views.get_position'),
+	url(r'^indoor_tracking$', 'django_test.views.indoor_tracking')
 	)

@@ -1,4 +1,3 @@
-2. Profile(Ajax form)
-3. make a web page show position(AJAX)
-4. how to use uploaded image as canvas??
-5. set router position
+1. Profile(Ajax form)
+2. make a web page show position(AJAX)
+3. set router position

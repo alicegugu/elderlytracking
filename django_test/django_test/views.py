@@ -69,3 +69,12 @@ def get_position(request):
 	cache_key = profile.tag_id
 	position = cache.get(cache_key)
 	return HttpResponse(position)
+
+@login_required
+def indoor_tracking(request):
+	user = request.user
+	profile = user.profile
+	args = {}
+	args['layout'] =  profile.layout
+	args['full_name'] = request.user.username
+	return render_to_response("indoor_tracking.html", args)
