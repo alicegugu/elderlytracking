@@ -1,0 +1,42 @@
+{% extends "header.html" %}
+
+{% block content %}
+
+<div align = "center">
+<form id="alert_form" method="POST" action="/alert">
+	{% csrf_token %}
+	<table>
+		<tbody>
+			<tr>
+				<td>Name:</td>
+				<td>{{full_name}}</td>
+			</tr>
+			<tr>
+				<td>Contact number:</td>
+				<td>{{contact_number}}</td>
+			</tr>
+		</tbody>
+	</table>
+	<input type="submit" id="alert" value="alert" />
+</form>
+</div>
+<div align = "center" id="result"></div>
+
+<script type="text/javascript">
+    var frm = $("#alert_form");
+    frm.submit(function () {
+        $.ajax({
+            type: frm.attr('method'),
+            url: frm.attr('action'),
+            data: frm.serialize(),
+            success: function (data) {
+            	$("#result").html(data);
+            },
+            error: function(data) {
+            	$("#result").html(data);
+            }
+        });
+        return false;
+    });
+</script>
+{% endblock %}

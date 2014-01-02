@@ -3,38 +3,17 @@
 
 
 
-<script type="text/javascript">
-/*
-$("#form").submit(function(e){
-    e.preventDefault();
-   	log.console('Form is submitting');
-	return true;
 
-    // do ajax submition
-    $.ajax({
-        url: "/accounts/profile/",
-        type: "POST",
-        data: $(this).serializeArray(),
-        success: function(data, status, xhr) {
-            // do the success stuff
-            log.console('success');
-        },
-        error: function(xhr, status err) {
-            // do the error stuff
-            log.console(err);
-        }
-    });
-});*/
-</script>
+
 <div align = "center">
 <h2 >Profile</h2>
-<form id="form" method="POST" action="/accounts/profile/" enctype="multipart/form-data">
+<form id="profile_form" method="POST" action="/accounts/profile/" enctype="multipart/form-data">
 	{% csrf_token %}
 	<table>
 		<tbody>
 			<tr>
 				<td>Name:</td>
-				<td>{{fullname}}</td>
+				<td>{{full_name}}</td>
 			</tr>
 			<tr>
 				<td>Tag ID</td>
@@ -50,8 +29,27 @@ $("#form").submit(function(e){
 			</tr>
 		</tbody>
 	</table>
-	<input type="submit" id="save" value="Update" />
+	<input type="submit" id="update" value="Update" />
 </form>
-	<label>Saved</label>
+<DIV id="saved"></DIV>
 </div>
+
+<script type="text/javascript">
+    var frm = $("#profile_form");
+    console.log("type="+$("#profile_form").attr('method'));
+    frm.submit(function () {
+        $.ajax({
+            type: frm.attr('method'),
+            url: frm.attr('action'),
+            data: frm.serialize(),
+            success: function (data) {
+                $("#saved").html(data);
+            },
+            error: function(data) {
+                $("#saved").html("Something went wrong!");
+            }
+        });
+        return false;
+    });
+</script>
 {% endblock %}

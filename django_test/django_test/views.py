@@ -6,6 +6,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.cache import cache
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+import pika
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 def login(request):
 	c = {}
@@ -78,3 +83,39 @@ def indoor_tracking(request):
 	args['layout'] =  profile.layout
 	args['full_name'] = request.user.username
 	return render_to_response("indoor_tracking.html", args)
+
+@login_required
+def outdoor_tracking(request):
+	user = request.user
+	profile = user.profile
+	args = {}
+	args['layout'] =  profile.layout
+	args['full_name'] = request.user.username
+	return render_to_response("outdoor_tracking.html", args)
+
+
+@login_required
+def  alert(request):
+	if request.is_ajax():
+		connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+		channel = connection.channel()
+		channel.queue_declare(queue='alert')
+
+		user = request.user
+		profile = user.profile
+		contact_number = profile.contact_number
+		message = contact_number
+		channel.basic_publish(exchange='',
+                      routing_key='alert',
+                      body=message)
+
+		return HttpResponse("successfully call " + message)
+	else:
+		user = request.user
+		profile = user.profile
+
+		args = {}
+		args.update(csrf(request))
+		args['full_name'] = user.username
+		args['contact_number'] = profile.contact_number
+		return render_to_response("alert.html", args)
