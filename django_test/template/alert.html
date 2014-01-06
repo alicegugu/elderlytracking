@@ -17,23 +17,48 @@
 			</tr>
 		</tbody>
 	</table>
-	<input type="submit" id="alert" value="alert" />
+	<button id="alert" value="alert">alert</button>
+    <button id="end" value="end">end</button>
 </form>
 </div>
 <div align = "center" id="result"></div>
 
 <script type="text/javascript">
     var frm = $("#alert_form");
-    frm.submit(function () {
+    var alert = $("#alert")
+    alert.click(function () {
         $.ajax({
             type: frm.attr('method'),
             url: frm.attr('action'),
             data: frm.serialize(),
             success: function (data) {
-            	$("#result").html(data);
+                console.log(data)
+                $("#alert").attr("disabled", true);
+                $("#end").attr("disabled", false);
+                message = "calling ";
+                $("#result").html(message.concat(data['message']));
             },
             error: function(data) {
             	$("#result").html(data);
+                console.log(data)
+            }
+        });
+        return false;
+    });
+
+    var frm = $("#alert_form");
+    var end = $("#end")
+    end.click(function () {
+        $.ajax({
+            type: "GET",
+            url: "/end_call",
+            success: function (data) {
+                $("#alert").attr("disabled", false);
+                $("#end").attr("disabled", true);
+                $("#result").html(data);
+            },
+            error: function(data) {
+                $("#result").html("error");
             }
         });
         return false;

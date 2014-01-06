@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import pika
 import logging
+import json
 
 
 logger = logging.getLogger(__name__)
@@ -59,13 +60,58 @@ def register_success(request, position):
 	return render_to_response('success.html')
 	
 def set_position(request):
-	cache_key = request.GET.get('tag_id')
-	position = request.GET.get('position')
 
+	response_data = {}
+	response_data['errors'] = []
+	try:
+		cache_key = request.GET.get('tag_id')
+		position = request.GET.get('position')
+		response_data['position'] = position
+		response_data['tag_id'] = cache_key
+
+	except Exception, e:
+		response_data['errors'].append(e)
+	else:
+		pass
+	finally:
+		pass
+	
+	if cache_key is None:
+		response_data['errors'].append('tag id can not be none')
+	if position is None:
+		response_data['errors'].append('position can not be none')
+		pass
 	# position will be updated for 30 sec
 	cache_time = 30
 	cache.set(cache_key, position, cache_time)
-	return HttpResponse(cache.get(cache_key))
+
+	return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
+def set_gps_position(request):
+
+	response_data = {}
+	cache_key = request.GET.get('tag_id')
+	position_latitude = request.GET.get('position_latitude')
+	position_longitude = request.GET.get('position_longitude')
+	
+	response_data['errors'] = []
+	if cache_key is None:
+		response_data['errors'].append('tag id can not be none')
+
+	if position_latitude is None:
+		response_data['errors'].append('latitude can not be none')
+
+	if position_longitude is None:
+		response_data['errors'].append('longitude can not be none')
+
+	# position will be updated for 30 sec
+	cache_time = 30
+	cache.set(cache_key+'latitude', position_latitude, cache_time)
+	cache.set(cache_key+'longitude', position_longitude, cache_time)
+
+	return HttpResponse(json.dumps(response_data), content_type="application/json")
+
 
 @login_required
 def get_position(request):
@@ -73,7 +119,15 @@ def get_position(request):
 	profile = user.profile
 	cache_key = profile.tag_id
 	position = cache.get(cache_key)
-	return HttpResponse(position)
+
+	response_data = {}
+	response_data['position'] = position
+	if position is None:
+		response_data['status'] = 'lost'
+
+	if cache_key is None:
+		response_data['error'] = 'User has no tag attached'
+	return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 @login_required
 def indoor_tracking(request):
@@ -97,19 +151,30 @@ def outdoor_tracking(request):
 @login_required
 def  alert(request):
 	if request.is_ajax():
-		connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-		channel = connection.channel()
-		channel.queue_declare(queue='alert')
+		response_data = {}
+		response_data['errors'] = []
+		try:
+			connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+			channel = connection.channel()
+			channel.queue_declare(queue='alert')
 
-		user = request.user
-		profile = user.profile
-		contact_number = profile.contact_number
-		message = contact_number
-		channel.basic_publish(exchange='',
+			user = request.user
+			profile = user.profile
+			contact_number = profile.contact_number
+			message = contact_number
+			channel.basic_publish(exchange='',
                       routing_key='alert',
                       body=message)
+			response_data['message'] = message
 
-		return HttpResponse("successfully call " + message)
+		except Exception, e:	
+			response_data['errors'].append(e)
+		else:
+			pass
+		finally:
+			pass
+
+		return HttpResponse(json.dumps(response_data), content_type="application/json")
 	else:
 		user = request.user
 		profile = user.profile
@@ -119,3 +184,18 @@ def  alert(request):
 		args['full_name'] = user.username
 		args['contact_number'] = profile.contact_number
 		return render_to_response("alert.html", args)
+
+
+@login_required
+def  end_call(request):
+	if request.is_ajax():
+		connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+		channel = connection.channel()
+		channel.queue_declare(queue='alert')
+
+		message = "end"
+		channel.basic_publish(exchange='',
+                      routing_key='alert',
+                      body=message)
+
+		return HttpResponse("call has been ended")
