@@ -2,9 +2,83 @@
 
 {% block content %}
 
-<div align = "center"><img src="http://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap
-&markers=color:red%7Clabel:S%7C40.702147,-74.015794&sensor=false">
-</div>
 
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map-canvas { height: 100% }
+    </style>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJw7FvMZUvLWz7n_arn92StvDhr8ytEMc&sensor=false">
+    </script>
+    <script type="text/javascript">
+      var map;
+      var marker;
+      function initialize() {
+        var mapOptions = {
+          center: new google.maps.LatLng(1.32643, 103.79426),
+          zoom: 11
+        };
+      map = new google.maps.Map(document.getElementById("map-canvas"),
+            mapOptions);
+
+      /*marker = new google.maps.Marker({
+        position: new google.maps.LatLng(1.32643, 103.79426), 
+        map: map,
+        title:"Hello World!"});*/
+
+      }
+
+
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+      var marker = null;
+	 		//Ajax call to get position
+      function set_center() {
+        	var feedback = $.ajax({
+            	type: 'GET',
+            	url: 'get_gps_position',
+              success: function (data) {
+                console.log(data);
+                  if (data['gps_position_longitude'] != null && data['gps_position_latitude'] != null ) {
+                    console.log(data['gps_position_latitude']);
+                    console.log(data['gps_position_longitude'] );
+                    //google.maps.event.trigger(map, 'resize');
+                    //var latlng = new google.maps.LatLng( data['gps_position_latitude'] , data['gps_position_longitude']);
+                    //marker.setPosition( latlng );
+                    var latlng = new google.maps.LatLng(data['gps_position_latitude'], data['gps_position_longitude']);
+
+                    //Create a new marker if no marker exist, or show it if already created one
+                    if (marker == null) {
+                      marker = new google.maps.Marker({
+                        position: latlng, 
+                        map: map,
+                        title:"Hello World!"});
+                    } else {
+                      marker.setMap(map);  
+                      marker.setPosition( latlng );
+                    }
+
+                  }
+                  else{
+                    if (marker != null) {
+                      marker.setMap(null);  
+                    };
+                  }
+                  
+                  
+            },
+            error: function(data) {
+            	$("#result").html(data);
+                console.log(data)
+            }
+        });
+      }
+      setInterval(set_center, 10000);
+   
+
+ 	</script>
+<div id="map-canvas"/>
 
 {% endblock %}

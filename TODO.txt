@@ -3,3 +3,4 @@
 3. set router position
 4. OAuth2 API https://django-oauth-toolkit.readthedocs.org/en/0.5.0/index.html
 5. [Done]Make a webpage for alert
+6.

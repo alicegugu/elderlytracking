@@ -66,24 +66,31 @@ def set_position(request):
 	try:
 		cache_key = request.GET.get('tag_id')
 		position = request.GET.get('position')
-		response_data['position'] = position
-		response_data['tag_id'] = cache_key
+
+		key =  request.GET.get('key')
+
+		if key == "set_position_key_2014":
+
+			if cache_key is None:
+				raise Exception('tag id can not be none')
+			if position is None:
+				raise Exception('position can not be none')
+
+			response_data['position'] = position
+			response_data['tag_id'] = cache_key
+			
+			# position will be updated for 30 sec
+			cache_time = 30
+			cache.set(cache_key, position, cache_time)
+		else:
+			raise Exception('key can not be empty')
 
 	except Exception, e:
-		response_data['errors'].append(e)
+		response_data['errors'].append(str(e))
 	else:
 		pass
 	finally:
 		pass
-	
-	if cache_key is None:
-		response_data['errors'].append('tag id can not be none')
-	if position is None:
-		response_data['errors'].append('position can not be none')
-		pass
-	# position will be updated for 30 sec
-	cache_time = 30
-	cache.set(cache_key, position, cache_time)
 
 	return HttpResponse(json.dumps(response_data), content_type="application/json")
 
@@ -91,27 +98,65 @@ def set_position(request):
 def set_gps_position(request):
 
 	response_data = {}
-	cache_key = request.GET.get('tag_id')
-	position_latitude = request.GET.get('position_latitude')
-	position_longitude = request.GET.get('position_longitude')
+
+	try:
+		key = request.GET.get('key')
+		cache_key = request.GET.get('tag_id')
+		position_latitude = request.GET.get('position_latitude')
+		position_longitude = request.GET.get('position_longitude')
 	
-	response_data['errors'] = []
-	if cache_key is None:
-		response_data['errors'].append('tag id can not be none')
+		
 
-	if position_latitude is None:
-		response_data['errors'].append('latitude can not be none')
+		if key == "set_gps_position_key_2014":
+			
 
-	if position_longitude is None:
-		response_data['errors'].append('longitude can not be none')
+			if cache_key is None:
+				raise Exception('tag id can not be none')
 
-	# position will be updated for 30 sec
-	cache_time = 30
-	cache.set(cache_key+'latitude', position_latitude, cache_time)
-	cache.set(cache_key+'longitude', position_longitude, cache_time)
+			if position_latitude is None:
+				raise Exception('latitude can not be none')
+
+			if position_longitude is None:
+				raise Exception('longitude can not be none')
+
+				# position will be updated for 30 sec
+			cache_time = 30
+			cache.set(cache_key+'latitude', position_latitude, cache_time)
+			cache.set(cache_key+'longitude', position_longitude, cache_time)
+			response_data['latitude'] = position_latitude
+			response_data['longitude'] = position_longitude
+
+		else:
+			raise Exception('key can not be empty')
+
+	except Exception, e:
+		response_data['errors'] = []
+		response_data['errors'].append(str(e))
+	else:
+		pass
+	finally:
+		pass
 
 	return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+@login_required
+def get_gps_position(request):
+	user = request.user
+	profile = user.profile
+	cache_key = profile.tag_id
+	position_latitude = cache.get(cache_key+'latitude')
+	position_longitude =  cache.get(cache_key+'longitude')
+
+	response_data = {}
+	response_data['gps_position_latitude'] = position_latitude
+	response_data['gps_position_longitude'] = position_longitude
+
+	if position_latitude is None or position_longitude is None:
+		response_data['status'] = 'lost'
+
+	if cache_key is None:
+		response_data['error'] = 'User has no tag attached'
+	return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 @login_required
 def get_position(request):

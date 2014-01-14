@@ -1,0 +1,12 @@
+* virtualenv
+	Script\activate
+
+* alert api
+HTTP GET: 127.0.0.1:8000/accounts/api/alert/?key=alert_key_2014&tag_id=123
+
+* indoor position api
+HTTP GET http://127.0.0.1:8000/set_position?key=set_position_key_2014&tag_id=123&position=zonea
+HTTP GET http://127.0.0.1:8000/get_position
+
+* outdoor position api
+HTTP GET http://127.0.0.1:8000/set_gps_position?key=set_gps_position_key_2014&tag_id=123&position_latitude=1&position_longitude=2
