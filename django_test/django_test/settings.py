@@ -74,7 +74,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'GMT+8'
+TIME_ZONE = 'Asia/Singapore'
 
 USE_I18N = True
 
