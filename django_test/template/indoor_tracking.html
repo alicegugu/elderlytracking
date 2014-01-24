@@ -6,19 +6,18 @@
 <canvas id="canvas" style="background-image:url('static/{{layout}}');background-repeat: no-repeat;"></canvas>
 </div>
 <script type="text/javascript">
+
+var Positions = [];
+
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-
-
 
 canvas.width = 	450
 canvas.height = 450;
 
 
-
 function draw(x, y) {
 
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	ctx.beginPath();
 	ctx.fillStyle = "skyblue";
 	ctx.strokeStyle = "gray";
@@ -27,19 +26,38 @@ function draw(x, y) {
 	ctx.stroke();
 }
 
-function handleMouseDown(e) {
-	      var canvasOffset = $("#canvas").offset();
-        var offsetX = canvasOffset.left;
-        var offsetY = canvasOffset.top;
-	mouseX = parseInt(e.screenX - offsetX);
-	mouseY = parseInt(e.screenY - offsetY);
-	console.log("clientX" + e.screenX + "clientY" + e.screenY);
-	console.log("offsetX" + offsetX + "offsetY" + offsetY);
-	console.log("Down: " + mouseX + " / " + mouseY);
-	console.log("layerX" + e.layerX + "layerY" + e.layerY);
+function position(mouseX, mouseY)
+{
+	this.x=mouseX;
+	this.y=mouseY;
+}
+
+function handleMouseDown(event) {
+
+	// Find cursor position in browsers except Firefox.
+	if (event.x != undefined && event.y != undefined)
+	{
+		mouseX = event.x;
+		mouseY = event.y;
+	}
+	// Find cursor position in Firefox browser.
+	else
+	{
+		mouseX = event.clientX + document.body.scrollLeft +
+		document.documentElement.scrollLeft;
+		mouseY = event.clientY + document.body.scrollTop +
+		document.documentElement.scrollTop;
+	}
+	// Set cursor position within Canvas.
+	var canvasOffset = $("#canvas").offset();
+    var offsetX = canvasOffset.left;
+	var offsetY = canvasOffset.top;
+	mouseX -= offsetX;
+	mouseY -= offsetY;
 
 	// Put your mousedown stuff here
 	draw(mouseX, mouseY);
+	Positions.push(new position(mouseX, mouseY))
 }
 
 $("#canvas").mousedown(function (e) {

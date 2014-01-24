@@ -2,5 +2,7 @@
 2. make a web page show position(AJAX)
 3. set router position
 4. OAuth2 API https://django-oauth-toolkit.readthedocs.org/en/0.5.0/index.html
+https://developers.google.com/accounts/docs/OAuth2
+http://net.tutsplus.com/tutorials/oauth-2-0-the-good-the-bad-the-ugly/
 5. [Done]Make a webpage for alert
 6.
